@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="app">
+      <h1>🔥title🔥</h1>
+      <h2>🔥message🔥</h2>
+      <h2>
+        <fire style="color: red">🔥count🔥</fire>
+      </h2>
+      <button onclick="toggleAnswer()">Toggle</button>
+      <button onclick="increase()">Increase hotness</button>
+      <button onclick="decrease()">Decrease</button>
+    </div>
+  </body>
+  <script src="./fire.js"></script>
+  <script>
+    const { setState, watch } = new Fire()
+
+    const initialState = {
+      title: 'Welcome',
+      count: 1,
+      message: 'Yes'
+    }
+
+    setState(initialState)
+
+    const increase = () =>
+      setState(({ count }) => ({
+        count: count + 1
+      }))
+
+    const decrease = () =>
+      setState(({ count }) => ({
+        count: count - 1
+      }))
+
+    const toggleAnswer = () =>
+      setState(({ message }) => ({
+        message: message === initialState.message
+          ? 'No'
+          : initialState.message
+      }))
+
+    watch({
+      count (value, oldValue) {
+        if (value > 10) {
+          setState({ message: `Oh, no! You're on 🔥! Previous count: ${oldValue}` })
+        }
+      },
+
+      message (value) {
+        console.log('[watch:message]', value)
+      }
+    })
+  </script>
+</html>
