@@ -13,6 +13,8 @@ class Fire {
     this._state = initialState || {}
     this._watchers = {}
     this._elementTracker = {}
+
+    this.setState(initialState)
   }
 
   generateTrackId = () => `${this._prefix}_${Math.random().toString(36).substr(2, 9)}`

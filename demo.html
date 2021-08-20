@@ -12,17 +12,17 @@
       <button onclick="decrease()">Decrease</button>
     </div>
   </body>
-  <script src="./fire.js"></script>
-  <script>
-    const { setState, watch } = new Fire()
 
+  <script src="./fire.js"></script>
+
+  <script>
     const initialState = {
       title: 'Welcome',
       count: 1,
       message: 'Yes'
     }
 
-    setState(initialState)
+    const { setState, watch } = new Fire({ initialState })
 
     const increase = () =>
       setState(({ count }) => ({
