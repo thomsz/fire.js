@@ -1,14 +1,12 @@
-console.log('Happy coding!')
-
-const app = document.getElementById('app')
-
 class Fire {
   constructor({
     prefix,
+    tagName,
     trackAttribute,
     initialState
   } = {}) {
     this._prefix = prefix || 'fire'
+    this._tagName = tagName || 'fire'
     this._trackAttribute = trackAttribute || `${this._prefix}-track-id`
     this._state = initialState || {}
     this._watchers = {}
@@ -37,11 +35,20 @@ class Fire {
       for (let j = 0; j < elementChildNodes.length; j++) {
         if (elementChildNodes[j].nodeType === 3) {
           const wrapperElement = elementChildNodes[j].parentElement
+          const fireVariable = `{{${key}}}`
 
-          if (elementChildNodes[j].nodeValue.includes(`🔥${key}🔥`)) {
-            elementChildNodes[j].nodeValue = value
+          if (elementChildNodes[j].nodeValue.includes(fireVariable)) {
+            wrapperElement.innerHTML = wrapperElement.innerHTML
+              .replace(
+                fireVariable,
+                `<${this._tagName}>${value}</${this._tagName}>`
+              )
+
             this.trackElement(key)
-            this.setTrackId(wrapperElement, this._elementTracker[key])
+            this.setTrackId(
+              wrapperElement.getElementsByTagName(this._tagName)[0],
+              this._elementTracker[key]
+            )
           } else if (
             wrapperElement.getAttribute(this._trackAttribute) === this._elementTracker[key] &&
             elementChildNodes[j].nodeValue !== String(this._state[key])
