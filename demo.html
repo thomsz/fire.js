@@ -16,13 +16,13 @@
 
     <script src="./fire.js"></script>
     <script>
-      const initialState = {
-        title: 'Welcome',
-        count: 1,
-        message: 'Yes'
-      }
-
-      const { setState, watch } = new Fire({ initialState })
+      const { setState, watch, initialState } = new Fire({
+        state: {
+          title: 'Welcome',
+          count: 1,
+          message: 'Yes'
+        }
+      })
 
       const increase = () =>
         setState(({ count }) => ({

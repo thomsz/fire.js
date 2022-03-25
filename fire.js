@@ -3,16 +3,38 @@ class Fire {
     prefix,
     tagName,
     trackAttribute,
-    initialState
+    state
   } = {}) {
     this._prefix = prefix || 'fire'
     this._tagName = tagName || 'fire'
     this._trackAttribute = trackAttribute || `${this._prefix}-track-id`
-    this._state = initialState || {}
+    this._initialState = state || {}
+    this._state = state || {}
     this._watchers = {}
     this._elementTracker = {}
 
-    this.setState(initialState)
+    this.setState(state)
+  }
+
+  get initialState () {
+    return this._initialState
+  }
+
+  setState = handler => {
+    const payload = typeof handler === 'function'
+      ? handler(this._state)
+      : handler
+
+    const oldState = this._state
+    this._state = {
+      ...this._state,
+      ...payload
+    }
+
+    Object.entries(payload).forEach(([key, value]) => {
+      this.updateDOM(key, value)
+      this._watchers[key] && this._watchers[key](this._state[key], oldState[key])
+    })
   }
 
   generateTrackId = () => `${this._prefix}_${Math.random().toString(36).substr(2, 9)}`
@@ -69,23 +91,6 @@ class Fire {
         }
       }
     }
-  }
-
-  setState = handler => {
-    const payload = typeof handler === 'function'
-      ? handler(this._state)
-      : handler
-
-    const oldState = this._state
-    this._state = {
-      ...this._state,
-      ...payload
-    }
-
-    Object.entries(payload).forEach(([key, value]) => {
-      this.updateDOM(key, value)
-      this._watchers[key] && this._watchers[key](this._state[key], oldState[key])
-    })
   }
 
   watch = (watchers = {}) => Object.entries(watchers).forEach(([key, watcher]) => (this._watchers[key] = watcher))
