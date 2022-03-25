@@ -49,13 +49,13 @@ class Fire {
   trackElement = key => this._elementTracker[key] = this.getTrackId(key)
 
   updateDOM = (key, value) => {
-    const excludedElements = ['html', 'head', 'body', 'script'].map(tagName => tagName.toUpperCase())
+    const excludedElements = ['html', 'head', 'body', 'script']
     const elements = document.getElementsByTagName('*')
 
     for (let i = 0; i < elements.length; i++) {
       const element = elements[i]
 
-      if (excludedElements.includes(element.nodeName)) continue
+      if (excludedElements.includes(element.nodeName.toLowerCase())) continue
 
       for (let j = 0; j < element.childNodes.length; j++) {
         const childNode = element.childNodes[j]
