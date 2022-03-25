@@ -31,19 +31,21 @@ class Fire {
     const elements = document.getElementsByTagName('*')
 
     for (let i = 0; i < elements.length; i++) {
-      if (excludedElements.includes(elements[i].nodeName)) continue
+      const element = elements[i]
 
-      const elementChildNodes = elements[i].childNodes
+      if (excludedElements.includes(element.nodeName)) continue
 
-      for (let j = 0; j < elementChildNodes.length; j++) {
-        if (elementChildNodes[j].nodeType === 3) {
-          const wrapperElement = elementChildNodes[j].parentElement
+      for (let j = 0; j < element.childNodes.length; j++) {
+        const childNode = element.childNodes[j]
+
+        if (childNode.nodeType === 3) {
+          const wrapperElement = childNode.parentElement
           const fireVariable = `{{${key}}}`
 
-          if (elementChildNodes[j].nodeValue.includes(fireVariable)) {
+          if (childNode.nodeValue.includes(fireVariable)) {
             this.trackElement(key)
 
-            if (elementChildNodes[j].nodeValue.length === fireVariable.length) {
+            if (childNode.nodeValue.length === fireVariable.length) {
               wrapperElement.innerHTML = value
               this.setTrackId(wrapperElement, this._elementTracker[key])
             } else {
@@ -58,12 +60,11 @@ class Fire {
                 this._elementTracker[key]
               )
             }
-
           } else if (
             wrapperElement.getAttribute(this._trackAttribute) === this._elementTracker[key] &&
-            elementChildNodes[j].nodeValue !== String(this._state[key])
+            childNode.nodeValue !== String(this._state[key])
           ) {
-            elementChildNodes[j].nodeValue = this._state[key]
+            childNode.nodeValue = this._state[key]
           }
         }
       }
