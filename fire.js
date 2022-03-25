@@ -38,17 +38,24 @@ class Fire {
           const fireVariable = `{{${key}}}`
 
           if (elementChildNodes[j].nodeValue.includes(fireVariable)) {
-            wrapperElement.innerHTML = wrapperElement.innerHTML
-              .replace(
-                fireVariable,
-                `<${this._tagName}>${value}</${this._tagName}>`
-              )
-
             this.trackElement(key)
-            this.setTrackId(
-              wrapperElement.getElementsByTagName(this._tagName)[0],
-              this._elementTracker[key]
-            )
+
+            if (elementChildNodes[j].nodeValue.length === fireVariable.length) {
+              wrapperElement.innerHTML = value
+              this.setTrackId(wrapperElement, this._elementTracker[key])
+            } else {
+              wrapperElement.innerHTML = wrapperElement.innerHTML
+                .replace(
+                  fireVariable,
+                  `<${this._tagName}>${value}</${this._tagName}>`
+                )
+
+              this.setTrackId(
+                wrapperElement.getElementsByTagName(this._tagName)[0],
+                this._elementTracker[key]
+              )
+            }
+
           } else if (
             wrapperElement.getAttribute(this._trackAttribute) === this._elementTracker[key] &&
             elementChildNodes[j].nodeValue !== String(this._state[key])
