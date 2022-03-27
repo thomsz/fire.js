@@ -8,7 +8,9 @@ class Fire {
             this._state = Object.assign(Object.assign({}, this._state), payload);
             Object.entries(payload).forEach(([key, value]) => {
                 this.updateDOM(key, value);
-                this._watchers[key] && this._watchers[key](this._state[key], oldState[key]);
+                const watcher = this._watchers[key];
+                if (watcher)
+                    watcher(this._state[key], oldState[key]);
             });
         };
         this.generateTrackId = () => `${this._prefix}_${Math.random().toString(36).substr(2, 9)}`;

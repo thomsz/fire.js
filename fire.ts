@@ -1,6 +1,7 @@
 type StateValue = any
 type State = Record<string, StateValue>
 type Watcher = (value: StateValue, oldValue: StateValue) => void
+type Watchers = Record<keyof State, Watcher>
 type TrackId = string
 
 class Fire {
@@ -22,7 +23,6 @@ class Fire {
     this._state = state || {}
     this._watchers = {}
     this._elementTracker = {}
-
     this.setState(state)
   }
 
@@ -31,7 +31,7 @@ class Fire {
   _trackAttribute: string
   _initialState: State
   _state: State
-  _watchers: Record<keyof State, Watcher>
+  _watchers: Watchers
   _elementTracker: Record<keyof State, TrackId>
 
   get initialState (): State {
@@ -51,7 +51,8 @@ class Fire {
 
     Object.entries(payload).forEach(([key, value]) => {
       this.updateDOM(key, value)
-      this._watchers[key] && this._watchers[key](this._state[key], oldState[key])
+      const watcher = this._watchers[key]
+      if (watcher) watcher(this._state[key], oldState[key])
     })
   }
 
@@ -110,6 +111,6 @@ class Fire {
     }
   }
 
-  watch = (watchers: Record<keyof State, Watcher> = {}) =>
+  watch = (watchers: Watchers = {}) =>
     Object.entries(watchers).forEach(([key, watcher]) => this._watchers[key] = watcher)
 }
